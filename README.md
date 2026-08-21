@@ -1,1 +1,1 @@
-# linux-window-manager
+# mate-window-snap
