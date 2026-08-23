@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=MATE Snap Windows
+Comment=Keyboard window snapping for MATE
+Exec=mate-snap-wm
+Type=Application
+OnlyShowIn=MATE;
+X-GNOME-Autostart-enabled=true
