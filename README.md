@@ -8,24 +8,84 @@ work-area data so MATE panels remain visible.
 ## Dependencies
 
 Build dependencies on Ubuntu are `build-essential`, `pkg-config`, `libx11-dev`,
-and `libxrandr-dev`.
+and `libxrandr-dev`. Git is needed to download the source repository.
 
-## Build
+## Build And Install
+
+Start in a terminal opened in the user's home directory. Run each command in
+order:
+
+1. Go to the home directory:
+
+```sh
+cd ~
+```
+
+2. Install Git and the build dependencies:
+
+```sh
+sudo apt update
+sudo apt install git build-essential pkg-config libx11-dev libxrandr-dev
+```
+
+3. Clone the project and enter its directory. Replace `OWNER` with the GitHub
+account or organization that hosts the project:
+
+```sh
+git clone https://github.com/OWNER/mate-snap-wm.git
+cd mate-snap-wm
+```
+
+All remaining build and installation commands in this section must be run from
+the cloned `mate-snap-wm` directory.
+
+4. Build the executable:
 
 ```sh
 make
 ```
 
-The install target honors `PREFIX` and `DESTDIR`, which makes it suitable for a
-local prefix or a distribution package. It installs the executable and a MATE
-autostart entry, so it starts automatically at login.
+5. Install the executable into `/usr/local/bin` and its system-wide MATE
+autostart entry into `/etc/xdg/autostart`:
 
 ```sh
-make install PREFIX=/usr/local
+sudo make install
 ```
 
-Log out and back in after installation to start the utility. It leaves Marco as
-MATE's window manager and communicates window moves through EWMH.
+6. Log out of the MATE desktop and log back in. The desktop session starts
+`mate-snap-wm` automatically after every future MATE login.
+
+To test the installed program immediately, without logging out, run this from
+the same MATE X11 session:
+
+```sh
+mate-snap-wm
+```
+
+It leaves Marco as MATE's window manager and communicates window moves through
+EWMH.
+
+## Uninstall
+
+Start in a terminal opened in the directory where the repository was cloned.
+For example, if it was cloned into the home directory:
+
+```sh
+cd ~/mate-snap-wm
+```
+
+Remove the executable and system-wide autostart entry:
+
+```sh
+sudo make uninstall
+```
+
+The utility will no longer start at future MATE logins. Any instance already
+running in the current session continues until it is stopped or the user logs
+out.
+
+The install target honors `PREFIX`, `SYSCONFDIR`, and `DESTDIR`, which makes it
+suitable for a different system prefix or a distribution package.
 
 ## Key Bindings
 
