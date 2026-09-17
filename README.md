@@ -5,6 +5,20 @@ runs alongside Marco and provides keyboard snapping for the focused application
 window, including dialogs. It uses RandR to discover active monitors and EWMH
 work-area data so MATE panels remain visible.
 
+## Compatibility
+
+`mate-snap-wm` is tested and supported on **Ubuntu MATE 24.04** using the
+**MATE desktop** with the **Marco** window manager in an **X11** session. It
+requires an X11 server with the RandR extension and a window manager that
+supports the EWMH `_NET_ACTIVE_WINDOW`, `_NET_WORKAREA`, and
+`_NET_MOVERESIZE_WINDOW` properties.
+
+It supports one monitor or two monitors arranged side by side. The cross-monitor
+shortcuts assume the monitors are ordered from left to right.
+
+Wayland sessions, other desktop environments, other window managers, and other
+Linux distributions are not currently supported or tested.
+
 ## Dependencies
 
 Build dependencies on Ubuntu are `build-essential`, `pkg-config`, `libx11-dev`,
@@ -32,8 +46,8 @@ sudo apt install git build-essential pkg-config libx11-dev libxrandr-dev
 account or organization that hosts the project:
 
 ```sh
-git clone https://github.com/OWNER/mate-snap-wm.git
-cd mate-snap-wm
+git clone https://github.com/Scott-Kaplan/mate-snap-wm.git
+cd mate-window-snap
 ```
 
 All remaining build and installation commands in this section must be run from
@@ -100,13 +114,3 @@ All shortcuts require the Super key and a numeric keypad key with NumLock on.
 | Super+KP9 | Top-right quarter of the current monitor |
 | Super+KP6 | Right half; from the right half of a left monitor, moves to the left edge of the monitor on the right while retaining the current size |
 | Super+KP3 | Bottom-right quarter of the current monitor |
-
-The monitor list is sorted left to right. With one monitor, repeated KP4 or KP6
-remains on that monitor. The implementation assumes the monitors are arranged
-side by side, as requested.
-
-## Scope
-
-This first version intentionally has no mouse move/resize, workspace controls,
-client rules, gaps, or configuration parser. The window manager retains control
-of decorations, focus, and normal window behavior.
