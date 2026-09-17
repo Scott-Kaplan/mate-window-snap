@@ -12,7 +12,7 @@
 #include <unistd.h>
 
 enum { MAX_MONITORS = 16 };
-enum { GEOMETRY_TOLERANCE = 32 };
+enum { GEOMETRY_TOLERANCE = 64 };
 
 typedef struct {
     int x;
@@ -220,9 +220,12 @@ static bool matches(Window window, Rectangle rectangle)
     int x;
     int y;
 
-    return XGetWindowAttributes(display, window, &attributes) &&
-           XTranslateCoordinates(display, window, root, 0, 0, &x, &y, &child) &&
-           abs(x - rectangle.x) <= GEOMETRY_TOLERANCE &&
+    if (!XGetWindowAttributes(display, window, &attributes) ||
+        !XTranslateCoordinates(display, window, root, 0, 0, &x, &y, &child)) {
+        return false;
+    }
+
+    return abs(x - rectangle.x) <= GEOMETRY_TOLERANCE &&
            abs(y - rectangle.y) <= GEOMETRY_TOLERANCE &&
            abs(x + attributes.width - rectangle.x - rectangle.width) <= GEOMETRY_TOLERANCE &&
            abs(y + attributes.height - rectangle.y - rectangle.height) <= GEOMETRY_TOLERANCE;
@@ -289,7 +292,7 @@ static void move_resize_window(Window window, Rectangle target)
         .message_type = net_moveresize_window,
         .format = 32,
         .data.l = {
-            2 | (1 << 8) | (1 << 9) | (1 << 10) | (1 << 11),
+            StaticGravity | (1 << 8) | (1 << 9) | (1 << 10) | (1 << 11),
             target.x,
             target.y,
             target.width,
@@ -299,6 +302,8 @@ static void move_resize_window(Window window, Rectangle target)
 
     XSendEvent(display, root, False, SubstructureRedirectMask | SubstructureNotifyMask, &state_event);
     XSendEvent(display, root, False, SubstructureRedirectMask | SubstructureNotifyMask, &event);
+    XMoveResizeWindow(display, window, target.x, target.y, (unsigned int)target.width,
+                      (unsigned int)target.height);
 }
 
 static void snap_focused_window(SnapAction action)
@@ -310,6 +315,7 @@ static void snap_focused_window(SnapAction action)
     Rectangle area;
     Rectangle target;
     XWindowAttributes attributes;
+    bool is_current_target;
 
     if (window == None) {
         return;
@@ -318,8 +324,9 @@ static void snap_focused_window(SnapAction action)
     monitor_index = monitor_for_window(window, monitor_list, monitor_count);
     area = intersect(monitor_list[monitor_index], work_area());
     target = snapped_rectangle(area, action);
+    is_current_target = matches(window, target);
 
-    if (action == SNAP_LEFT && monitor_index > 0 && matches(window, target)) {
+    if (action == SNAP_LEFT && monitor_index > 0 && is_current_target) {
         area = intersect(monitor_list[monitor_index - 1], work_area());
         if (XGetWindowAttributes(display, window, &attributes)) {
             target.x = area.x + area.width - attributes.width;
@@ -327,7 +334,7 @@ static void snap_focused_window(SnapAction action)
             target.width = attributes.width;
             target.height = attributes.height;
         }
-    } else if (action == SNAP_RIGHT && monitor_index + 1 < monitor_count && matches(window, target)) {
+    } else if (action == SNAP_RIGHT && monitor_index + 1 < monitor_count && is_current_target) {
         area = intersect(monitor_list[monitor_index + 1], work_area());
         if (XGetWindowAttributes(display, window, &attributes)) {
             target.x = area.x;
