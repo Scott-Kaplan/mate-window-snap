@@ -5,6 +5,10 @@ runs alongside Marco and provides keyboard snapping for the focused application
 window, including dialogs. It uses RandR to discover active monitors and EWMH
 work-area data so MATE panels remain visible.
 
+Contributions are welcome within the project's Ubuntu MATE/X11 scope. Please
+read [CONTRIBUTING.md](CONTRIBUTING.md) before opening an issue or pull request.
+See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community expectations.
+
 ## Compatibility
 
 `mate-snap-wm` is tested and supported on **Ubuntu MATE 24.04** using the
@@ -42,12 +46,11 @@ sudo apt update
 sudo apt install git build-essential pkg-config libx11-dev libxrandr-dev
 ```
 
-3. Clone the project and enter its directory. Replace `OWNER` with the GitHub
-account or organization that hosts the project:
+3. Clone the project and enter its directory:
 
 ```sh
 git clone https://github.com/Scott-Kaplan/mate-snap-wm.git
-cd mate-window-snap
+cd mate-snap-wm
 ```
 
 All remaining build and installation commands in this section must be run from
