@@ -1,6 +1,6 @@
 # MATE Snap WM
 
-`mate-snap-wm` is a deliberately small X11 utility for Ubuntu MATE 24.04. It
+`mate-window-snap` is a deliberately small X11 utility for Ubuntu MATE 24.04. It
 runs alongside Marco and provides keyboard snapping for the focused application
 window, including dialogs. It uses RandR to discover active monitors and EWMH
 work-area data so MATE panels remain visible.
@@ -11,7 +11,7 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community expectations.
 
 ## Compatibility
 
-`mate-snap-wm` is tested and supported on **Ubuntu MATE 24.04** using the
+`mate-window-snap` is tested and supported on **Ubuntu MATE 24.04** using the
 **MATE desktop** with the **Marco** window manager in an **X11** session. It
 requires an X11 server with the RandR extension and a window manager that
 supports the EWMH `_NET_ACTIVE_WINDOW`, `_NET_WORKAREA`, and
@@ -49,12 +49,12 @@ sudo apt install git build-essential pkg-config libx11-dev libxrandr-dev
 3. Clone the project and enter its directory:
 
 ```sh
-git clone https://github.com/Scott-Kaplan/mate-snap-wm.git
-cd mate-snap-wm
+git clone https://github.com/Scott-Kaplan/mate-window-snap.git
+cd mate-window-snap
 ```
 
 All remaining build and installation commands in this section must be run from
-the cloned `mate-snap-wm` directory.
+the cloned `mate-window-snap` directory.
 
 4. Build the executable:
 
@@ -70,13 +70,13 @@ sudo make install
 ```
 
 6. Log out of the MATE desktop and log back in. The desktop session starts
-`mate-snap-wm` automatically after every future MATE login.
+`mate-window-snap` automatically after every future MATE login.
 
 To test the installed program immediately, without logging out, run this from
 the same MATE X11 session:
 
 ```sh
-mate-snap-wm
+mate-window-snap
 ```
 
 It leaves Marco as MATE's window manager and communicates window moves through
@@ -88,7 +88,7 @@ Start in a terminal opened in the directory where the repository was cloned.
 For example, if it was cloned into the home directory:
 
 ```sh
-cd ~/mate-snap-wm
+cd ~/mate-window-snap
 ```
 
 Remove the executable and system-wide autostart entry:

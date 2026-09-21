@@ -5,8 +5,8 @@ CFLAGS ?= -O2 -Wall -Wextra -Wpedantic -std=c11
 CPPFLAGS += $(shell pkg-config --cflags x11 xrandr)
 LDLIBS += $(shell pkg-config --libs x11 xrandr)
 
-TARGET := mate-snap-wm
-SOURCE := src/mate-snap-wm.c
+TARGET := mate-window-snap
+SOURCE := src/mate-window-snap.c
 
 .PHONY: all clean install uninstall
 
@@ -18,11 +18,11 @@ $(TARGET): $(SOURCE)
 install: $(TARGET)
 	install -d $(DESTDIR)$(PREFIX)/bin $(DESTDIR)$(SYSCONFDIR)/xdg/autostart
 	install -m 755 $(TARGET) $(DESTDIR)$(PREFIX)/bin/$(TARGET)
-	install -m 644 share/autostart/mate-snap-wm.desktop $(DESTDIR)$(SYSCONFDIR)/xdg/autostart/mate-snap-wm.desktop
+	install -m 644 share/autostart/mate-window-snap.desktop $(DESTDIR)$(SYSCONFDIR)/xdg/autostart/mate-window-snap.desktop
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/$(TARGET)
-	rm -f $(DESTDIR)$(SYSCONFDIR)/xdg/autostart/mate-snap-wm.desktop
+	rm -f $(DESTDIR)$(SYSCONFDIR)/xdg/autostart/mate-window-snap.desktop
 
 clean:
 	rm -f $(TARGET)

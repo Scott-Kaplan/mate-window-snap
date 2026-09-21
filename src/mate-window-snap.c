@@ -392,7 +392,7 @@ int main(void)
 {
     display = XOpenDisplay(NULL);
     if (display == NULL) {
-        fputs("mate-snap-wm: cannot connect to the X display\n", stderr);
+        fputs("mate-window-snap: cannot connect to the X display\n", stderr);
         return EXIT_FAILURE;
     }
 

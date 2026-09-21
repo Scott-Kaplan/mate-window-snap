@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for your interest in improving `mate-snap-wm`.
+Thank you for your interest in improving `mate-window-snap`.
 
 ## Project Scope
 
