@@ -55,7 +55,7 @@ representative at an online or offline event.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported privately to `scott.p.kaplan@gmail.com`. The project maintainer will
-review reports and decide, at their discretion, what response is appropriate.
+review reports and decide, at his discretion, what response is appropriate.
 Reports will be handled as privately as practical, while recognizing that
 some situations may require limited disclosure to investigate or respond.
 

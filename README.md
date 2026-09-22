@@ -1,4 +1,4 @@
-# MATE Snap WM
+# MATE Window Snap
 
 `mate-window-snap` is a deliberately small X11 utility for Ubuntu MATE 24.04. It
 runs alongside Marco and provides keyboard snapping for the focused application
