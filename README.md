@@ -30,10 +30,9 @@ and `libxrandr-dev`. Git is needed to download the source repository.
 
 ## Build And Install
 
-Start in a terminal opened in the user's home directory. Run each command in
-order:
+Run each command in order:
 
-1. Go to the home directory:
+1. Go to your home directory (or another directory if you prefer):
 
 ```sh
 cd ~
@@ -62,25 +61,25 @@ the cloned `mate-window-snap` directory.
 make
 ```
 
-5. Install the executable into `/usr/local/bin` and its system-wide MATE
+5. Test:
+
+```sh
+mate-window-snap
+```
+... and then press one of the sequences found in the Key Bindings at the bottom of this page.  You should then see this terminal window snap to the respective location.
+
+## Automatic Startup
+These steps will automatically activate mate-window-snap when you login
+
+1. This next command installs the executable into `/usr/local/bin` and its system-wide MATE
 autostart entry into `/etc/xdg/autostart`:
 
 ```sh
 sudo make install
 ```
 
-6. Log out of the MATE desktop and log back in. The desktop session starts
-`mate-window-snap` automatically after every future MATE login.
-
-To test the installed program immediately, without logging out, run this from
-the same MATE X11 session:
-
-```sh
-mate-window-snap
-```
-
-It leaves Marco as MATE's window manager and communicates window moves through
-EWMH.
+2. Log out of the MATE desktop and log back in. The desktop session then starts
+`mate-window-snap` automatically after every future MATE login.  You should see all key bindings work as soon as you login
 
 ## Uninstall
 
