@@ -66,7 +66,7 @@ make
 ```sh
 mate-window-snap
 ```
-... and then press one or more Key Binding shortcuts at the bottom of this page.  You should then see whatever selected window you have snap to the respective location.
+... and then press one or more Key Binding shortcuts at the bottom of this page.  You should then see whatever window you have selected snap to the respective location.
 
 ## Automatic Startup
 These steps will automatically activate mate-window-snap when you login:
