@@ -21,7 +21,7 @@ It supports one monitor or two monitors arranged side by side. The cross-monitor
 shortcuts assume the monitors are ordered from left to right.
 
 Wayland sessions, other desktop environments, other window managers, and other
-Linux distributions are not currently supported or tested.
+Linux distributions are not currently supported nor tested.
 
 ## Dependencies
 
@@ -66,20 +66,19 @@ make
 ```sh
 mate-window-snap
 ```
-... and then press one of the sequences found in the Key Bindings at the bottom of this page.  You should then see this terminal window snap to the respective location.
+... and then press one of the sequences found in the Key Bindings at the bottom of this page.  You should then see whatever selected window you have snap to the respective location.
 
 ## Automatic Startup
-These steps will automatically activate mate-window-snap when you login
+These steps will automatically activate mate-window-snap when you login:
 
-1. This next command installs the executable into `/usr/local/bin` and its system-wide MATE
+1. This command installs the executable into `/usr/local/bin` and its system-wide MATE
 autostart entry into `/etc/xdg/autostart`:
 
 ```sh
 sudo make install
 ```
 
-2. Log out of the MATE desktop and log back in. The desktop session then starts
-`mate-window-snap` automatically after every future MATE login.  You should see all key bindings work as soon as you login
+2. Log out of the MATE desktop and log back in. All key bindings should work.
 
 ## Uninstall
 
