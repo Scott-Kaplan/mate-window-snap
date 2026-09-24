@@ -78,7 +78,7 @@ autostart entry into `/etc/xdg/autostart`:
 sudo make install
 ```
 
-2. Log out of the MATE desktop and log back in. All key bindings should work.
+2. Log out of the MATE desktop and log back in. All Key Binding shortcuts should work.
 
 ## Uninstall
 
