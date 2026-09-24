@@ -38,7 +38,7 @@ Run each command in order:
 cd ~
 ```
 
-2. Install Git and the build dependencies:
+2. Install Git and this project's build dependencies:
 
 ```sh
 sudo apt update
