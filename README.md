@@ -94,13 +94,7 @@ Remove the executable and system-wide autostart entry:
 ```sh
 sudo make uninstall
 ```
-
-The utility will no longer start at future MATE logins. Any instance already
-running in the current session continues until it is stopped or the user logs
-out.
-
-The install target honors `PREFIX`, `SYSCONFDIR`, and `DESTDIR`, which makes it
-suitable for a different system prefix or a distribution package.
+The final step is just to log out or restart your computer.
 
 ## Key Bindings
 
