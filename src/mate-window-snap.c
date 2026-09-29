@@ -11,6 +11,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#define MATE_WINDOW_SNAP_VERSION "1.0.1"
+
 enum { MAX_MONITORS = 16 };
 enum { GEOMETRY_TOLERANCE = 64 };
 
@@ -388,8 +390,17 @@ static const KeyBinding *binding_for_keycode(KeyCode keycode)
     return NULL;
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
+    if (argc == 2 && strcmp(argv[1], "--version") == 0) {
+        printf("mate-window-snap %s\n", MATE_WINDOW_SNAP_VERSION);
+        return EXIT_SUCCESS;
+    }
+    if (argc != 1) {
+        fprintf(stderr, "Usage: %s [--version]\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
     display = XOpenDisplay(NULL);
     if (display == NULL) {
         fputs("mate-window-snap: cannot connect to the X display\n", stderr);

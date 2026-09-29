@@ -28,6 +28,16 @@ Linux distributions are not currently supported nor tested.
 Build dependencies on Ubuntu are `build-essential`, `pkg-config`, `libx11-dev`,
 and `libxrandr-dev`. Git is needed to download the source repository.
 
+## Version
+
+From the cloned project directory after building, display the version with:
+
+```sh
+./mate-window-snap --version
+```
+
+After installation, run `mate-window-snap --version` from any directory.
+
 ## Build And Install
 
 Run each command in order:
@@ -64,7 +74,7 @@ make
 5. Test:
 
 ```sh
-mate-window-snap
+./mate-window-snap
 ```
 ... and then press one or more Key Binding shortcuts found at the bottom of this page.  You should then see whatever window you have selected snap to the respective location.
 
