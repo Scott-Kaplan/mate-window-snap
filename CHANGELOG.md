@@ -2,7 +2,7 @@
 
 Notable changes to `mate-window-snap` are recorded here.
 
-## Version 1.0.1 - 9/29/2026
+## Version 1.0.1  9/29/2026
 
 ### Added
 
