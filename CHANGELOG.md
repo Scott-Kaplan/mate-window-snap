@@ -1,6 +1,6 @@
 # Changelog
 
-Below are the changes that have been made to `mate-window-snap.`.
+Below are the changes that have been made to `mate-window-snap`.
 
 ## Version 1.0.1
 
