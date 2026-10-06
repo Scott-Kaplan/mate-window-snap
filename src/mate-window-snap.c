@@ -11,7 +11,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MATE_WINDOW_SNAP_VERSION "1.0.3"
+#define MATE_WINDOW_SNAP_VERSION "1.0.4"
 
 enum { MAX_MONITORS = 16 };
 enum { GEOMETRY_TOLERANCE = 64 };
@@ -273,42 +273,6 @@ static Rectangle snapped_rectangle(Rectangle area, SnapAction action)
     return result;
 }
 
-static Rectangle inset_frame_extents(Window window, Rectangle target)
-{
-    const char *property_names[] = { "_NET_FRAME_EXTENTS", "_GTK_FRAME_EXTENTS" };
-
-    for (size_t index = 0; index < sizeof(property_names) / sizeof(property_names[0]); index++) {
-        Atom property = XInternAtom(display, property_names[index], True);
-        Atom type;
-        int format;
-        unsigned long item_count;
-        unsigned long bytes_after;
-        unsigned char *data = NULL;
-
-        if (property == None ||
-            XGetWindowProperty(display, window, property, 0, 4, False, XA_CARDINAL,
-                               &type, &format, &item_count, &bytes_after, &data) != Success ||
-            type != XA_CARDINAL || format != 32 || item_count != 4 || data == NULL) {
-            XFree(data);
-            continue;
-        }
-
-        unsigned long *extents = (unsigned long *)data;
-        unsigned long horizontal = extents[0] + extents[1];
-        unsigned long vertical = extents[2] + extents[3];
-        if (horizontal < (unsigned long)target.width && vertical < (unsigned long)target.height) {
-            target.x += (int)extents[0];
-            target.y += (int)extents[2];
-            target.width -= (int)horizontal;
-            target.height -= (int)vertical;
-        }
-        XFree(data);
-        break;
-    }
-
-    return target;
-}
-
 static void move_resize_window(Window window, Rectangle target)
 {
     XEvent state_event = { .xclient = {
@@ -380,7 +344,7 @@ static void snap_focused_window(SnapAction action)
         }
     }
 
-    move_resize_window(window, inset_frame_extents(window, target));
+    move_resize_window(window, target);
 }
 
 static void find_num_lock_mask(void)

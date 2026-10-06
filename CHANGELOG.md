@@ -2,6 +2,14 @@
 
 Below are the changes that have been made to `mate-window-snap`.
 
+## Version 1.0.4
+
+10/6/2026
+
+### Fixed
+
+- Removed the GTK frame-extents adjustment that reduced the requested snap size.
+
 ## Version 1.0.3
 
 10/5/2026
