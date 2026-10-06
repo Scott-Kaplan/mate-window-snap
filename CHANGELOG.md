@@ -2,6 +2,14 @@
 
 Below are the changes that have been made to `mate-window-snap`.
 
+## Version 1.0.3
+
+10/5/2026
+
+### Fixed
+
+- Account for advertised window-frame extents when snapping so windows align with the requested bounds.
+
 ## Version 1.0.2
 
 10/3/2026
