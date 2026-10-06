@@ -11,7 +11,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MATE_WINDOW_SNAP_VERSION "1.0.1"
+#define MATE_WINDOW_SNAP_VERSION "1.0.2"
 
 enum { MAX_MONITORS = 16 };
 enum { GEOMETRY_TOLERANCE = 64 };
@@ -304,8 +304,6 @@ static void move_resize_window(Window window, Rectangle target)
 
     XSendEvent(display, root, False, SubstructureRedirectMask | SubstructureNotifyMask, &state_event);
     XSendEvent(display, root, False, SubstructureRedirectMask | SubstructureNotifyMask, &event);
-    XMoveResizeWindow(display, window, target.x, target.y, (unsigned int)target.width,
-                      (unsigned int)target.height);
 }
 
 static void snap_focused_window(SnapAction action)
