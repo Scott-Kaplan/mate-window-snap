@@ -73,7 +73,7 @@ make
 ```sh
 ./mate-window-snap --version
 ```
-or `mate-window-snap --version` from any directory once it is installed.
+Once it is installed, you can run `mate-window-snap --version` from any directory.
 
 ## Automatic Startup
 These steps will automatically activate mate-window-snap when you login:
