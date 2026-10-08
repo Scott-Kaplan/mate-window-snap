@@ -28,16 +28,6 @@ Linux distributions are not currently supported nor tested.
 Build dependencies on Ubuntu are `build-essential`, `pkg-config`, `libx11-dev`,
 and `libxrandr-dev`. Git is needed to download the source repository.
 
-## Version
-
-From the cloned project directory after building, display the version with:
-
-```sh
-./mate-window-snap --version
-```
-
-After installation, run `mate-window-snap --version` from any directory.
-
 ## Build And Install
 
 Run each command in order:
