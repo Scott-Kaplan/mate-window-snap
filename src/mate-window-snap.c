@@ -11,7 +11,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MATE_WINDOW_SNAP_VERSION "1.0.4"
+#define MATE_WINDOW_SNAP_VERSION "1.0.5"
 
 enum { MAX_MONITORS = 16 };
 enum { GEOMETRY_TOLERANCE = 64 };

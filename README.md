@@ -23,6 +23,21 @@ shortcuts assume the monitors are ordered from left to right.
 Wayland sessions, other desktop environments, other window managers, and other
 Linux distributions are not currently supported nor tested.
 
+## Marco Shortcut Conflicts
+
+Marco's default keypad shortcuts conflict with `mate-window-snap`. To let
+`mate-window-snap` handle them, run this script from the project directory:
+
+```sh
+./disable-marco-keybindings.sh
+```
+
+Restore Marco's default shortcuts with:
+
+```sh
+./restore-marco-keybindings.sh
+```
+
 ## Dependencies
 
 Build dependencies on Ubuntu are `build-essential`, `pkg-config`, `libx11-dev`,

@@ -2,6 +2,14 @@
 
 Below are the changes that have been made to `mate-window-snap`.
 
+## Version 1.0.5
+
+10/12/2026
+
+### Added
+
+- Scripts to disable and restore Marco's conflicting keypad shortcuts.
+
 ## Version 1.0.4
 
 10/6/2026
