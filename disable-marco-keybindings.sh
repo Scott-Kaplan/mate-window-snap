@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# this script persists through power ups
+
 set -eu
 
 schema=org.mate.Marco.window-keybindings

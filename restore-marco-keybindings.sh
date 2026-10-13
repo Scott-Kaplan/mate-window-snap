@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# if ran disable-macro-keybindings.sh, need to run this script because that one and this one supposedly persists through power ups.  Would only need to run this script if not using mate-window-snap.
+
 set -eu
 
 schema=org.mate.Marco.window-keybindings
