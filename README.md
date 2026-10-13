@@ -3,7 +3,9 @@
 `mate-window-snap` is a deliberately small X11 utility for Ubuntu MATE 24.04. It
 runs alongside Marco and provides keyboard snapping for the focused application
 window, including dialogs. It uses RandR to discover active monitors and EWMH
-work-area data so MATE panels remain visible.
+window data to snap against full monitor bounds. Snapped windows can cover MATE
+panels, but moves between monitors stay inside the usable area because Marco
+rejects moves that overlap a panel.
 
 Contributions are welcome within the project's Ubuntu MATE/X11 scope. Please
 read [CONTRIBUTING.md](CONTRIBUTING.md) before opening an issue or pull request.
@@ -36,6 +38,13 @@ Restore Marco's default shortcuts with:
 
 ```sh
 ./restore-marco-keybindings.sh
+```
+
+To print snapping diagnostics to the terminal and append them to
+`/tmp/mate-window-snap.log` while testing, run:
+
+```sh
+MATE_WINDOW_SNAP_DEBUG=1 ./mate-window-snap
 ```
 
 ## Dependencies
@@ -127,7 +136,7 @@ All shortcuts require the Super key and a numeric keypad key with NumLock on.
 | Super+KP7 | Top-left quarter of the current monitor |
 | Super+KP4 | Left half; from the left half of a right monitor, moves to the right edge of the monitor on the left while retaining the current size |
 | Super+KP1 | Bottom-left quarter of the current monitor |
-| Super+KP5 | Usable work area of the current monitor |
+| Super+KP5 | Full current monitor |
 | Super+KP9 | Top-right quarter of the current monitor |
 | Super+KP6 | Right half; from the right half of a left monitor, moves to the left edge of the monitor on the right while retaining the current size |
 | Super+KP3 | Bottom-right quarter of the current monitor |
