@@ -2,6 +2,14 @@
 
 Below are the changes that have been made to `mate-window-snap`.
 
+## Version 1.0.13
+
+10/13/2026
+
+### Fixed
+
+- Snap and cross-monitor moves fit each monitor's usable area, so a second Super+KP4 no longer bounces the window back to the right monitor.
+
 ## Version 1.0.12
 
 10/12/2026

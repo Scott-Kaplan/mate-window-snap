@@ -15,7 +15,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MATE_WINDOW_SNAP_VERSION "1.0.12"
+#define MATE_WINDOW_SNAP_VERSION "1.0.13"
 #define DEBUG_LOG_PATH "/tmp/mate-window-snap.log"
 
 enum { MAX_MONITORS = 16 };
@@ -110,42 +110,68 @@ static int compare_monitors(const void *left, const void *right)
     return (left_monitor->x > right_monitor->x) - (left_monitor->x < right_monitor->x);
 }
 
-static Rectangle screen_area(void)
+static bool ranges_overlap(int first_start, int first_end, int second_start, int second_end)
 {
-    return (Rectangle){ 0, 0, DisplayWidth(display, DefaultScreen(display)),
-                        DisplayHeight(display, DefaultScreen(display)) };
+    return first_start <= second_end && second_start <= first_end;
 }
 
-static Rectangle work_area(void)
+/* Marco rejects automated moves that overlap a panel, so targets must stay inside this area. */
+static Rectangle usable_area(Rectangle monitor)
 {
-    Rectangle area = screen_area();
+    Rectangle area = monitor;
     Atom type;
     int format;
-    unsigned long item_count;
+    unsigned long count;
     unsigned long bytes_after;
-    unsigned char *data = NULL;
-    unsigned long desktop = 0;
+    unsigned char *list = NULL;
+    int screen_width = DisplayWidth(display, DefaultScreen(display));
+    int screen_height = DisplayHeight(display, DefaultScreen(display));
+    int monitor_right = monitor.x + monitor.width - 1;
+    int monitor_bottom = monitor.y + monitor.height - 1;
+    Atom strut_property = XInternAtom(display, "_NET_WM_STRUT_PARTIAL", False);
 
-    if (XGetWindowProperty(display, root, XInternAtom(display, "_NET_CURRENT_DESKTOP", False), 0, 1,
-                           False, XA_CARDINAL, &type, &format, &item_count, &bytes_after,
-                           &data) == Success &&
-        data != NULL && format == 32 && item_count == 1) {
-        desktop = *(unsigned long *)data;
+    if (XGetWindowProperty(display, root, XInternAtom(display, "_NET_CLIENT_LIST", False), 0, 4096,
+                           False, XA_WINDOW, &type, &format, &count, &bytes_after,
+                           &list) != Success ||
+        list == NULL || format != 32) {
+        XFree(list);
+        return area;
     }
-    XFree(data);
-    data = NULL;
 
-    if (XGetWindowProperty(display, root, XInternAtom(display, "_NET_WORKAREA", False), 0, 4096,
-                           False, XA_CARDINAL, &type, &format, &item_count, &bytes_after,
-                           &data) == Success &&
-        data != NULL && format == 32 && item_count >= (desktop + 1) * 4) {
-        unsigned long *values = (unsigned long *)data + desktop * 4;
-        area.x = (int)values[0];
-        area.y = (int)values[1];
-        area.width = (int)values[2];
-        area.height = (int)values[3];
+    for (unsigned long index = 0; index < count; index++) {
+        unsigned long item_count;
+        unsigned char *data = NULL;
+
+        if (XGetWindowProperty(display, ((Window *)list)[index], strut_property, 0, 12, False,
+                               XA_CARDINAL, &type, &format, &item_count, &bytes_after,
+                               &data) != Success ||
+            data == NULL || format != 32 || item_count != 12) {
+            XFree(data);
+            continue;
+        }
+
+        unsigned long *strut = (unsigned long *)data;
+        if (strut[0] > 0 && (int)strut[0] > area.x &&
+            ranges_overlap((int)strut[4], (int)strut[5], monitor.y, monitor_bottom)) {
+            area.width -= (int)strut[0] - area.x;
+            area.x = (int)strut[0];
+        }
+        if (strut[1] > 0 && screen_width - (int)strut[1] < area.x + area.width &&
+            ranges_overlap((int)strut[6], (int)strut[7], monitor.y, monitor_bottom)) {
+            area.width = screen_width - (int)strut[1] - area.x;
+        }
+        if (strut[2] > 0 && (int)strut[2] > area.y &&
+            ranges_overlap((int)strut[8], (int)strut[9], monitor.x, monitor_right)) {
+            area.height -= (int)strut[2] - area.y;
+            area.y = (int)strut[2];
+        }
+        if (strut[3] > 0 && screen_height - (int)strut[3] < area.y + area.height &&
+            ranges_overlap((int)strut[10], (int)strut[11], monitor.x, monitor_right)) {
+            area.height = screen_height - (int)strut[3] - area.y;
+        }
+        XFree(data);
     }
-    XFree(data);
+    XFree(list);
     return area;
 }
 
@@ -180,45 +206,6 @@ static Rectangle expanded_rectangle(Rectangle target, FrameExtents extents)
     target.width += extents.left + extents.right;
     target.height += extents.top + extents.bottom;
     return target;
-}
-
-/* Marco pushes back automated moves whose visible area overlaps a panel. */
-static Rectangle fit_vertically(Rectangle client, FrameExtents extents, Rectangle area)
-{
-    int top = client.y + extents.top;
-    int bottom = client.y + client.height - extents.bottom;
-
-    if (top < area.y) {
-        bottom += area.y - top;
-        top = area.y;
-    }
-    if (bottom > area.y + area.height) {
-        bottom = area.y + area.height;
-    }
-    if (bottom <= top) {
-        return client;
-    }
-    client.y = top - extents.top;
-    client.height = bottom - top + extents.top + extents.bottom;
-    return client;
-}
-
-static Rectangle intersect(Rectangle first, Rectangle second)
-{
-    int right = (first.x + first.width < second.x + second.width)
-                    ? first.x + first.width
-                    : second.x + second.width;
-    int bottom = (first.y + first.height < second.y + second.height)
-                     ? first.y + first.height
-                     : second.y + second.height;
-    Rectangle result = {
-        .x = first.x > second.x ? first.x : second.x,
-        .y = first.y > second.y ? first.y : second.y,
-    };
-
-    result.width = right - result.x;
-    result.height = bottom - result.y;
-    return result.width > 0 && result.height > 0 ? result : first;
 }
 
 static size_t monitors(Rectangle result[MAX_MONITORS])
@@ -420,34 +407,38 @@ static void snap_focused_window(SnapAction action)
     }
     monitor_count = monitors(monitor_list);
     monitor_index = monitor_for_window(window, monitor_list, monitor_count);
-    area = intersect(monitor_list[monitor_index], screen_area());
+    area = usable_area(monitor_list[monitor_index]);
     extents = frame_extents(window);
     target = snapped_rectangle(area, action);
     is_current_target = matches(window, expanded_rectangle(target, extents));
 
     if (action == SNAP_LEFT && monitor_index > 0 && is_current_target) {
         crossing_monitor = true;
-        area = intersect(monitor_list[monitor_index - 1], screen_area());
+        area = usable_area(monitor_list[monitor_index - 1]);
         if (XGetWindowAttributes(display, window, &attributes)) {
-            target.width = attributes.width;
+            target.width = attributes.width - extents.left - extents.right;
+            target.height = attributes.height - extents.top - extents.bottom;
+            if (target.height > area.height) {
+                target.height = area.height;
+            }
             target.x = area.x + area.width - target.width;
             target.y = area.y;
-            target.height = attributes.height;
         }
     } else if (action == SNAP_RIGHT && monitor_index + 1 < monitor_count && is_current_target) {
         crossing_monitor = true;
-        area = intersect(monitor_list[monitor_index + 1], screen_area());
+        area = usable_area(monitor_list[monitor_index + 1]);
         if (XGetWindowAttributes(display, window, &attributes)) {
+            target.width = attributes.width - extents.left - extents.right;
+            target.height = attributes.height - extents.top - extents.bottom;
+            if (target.height > area.height) {
+                target.height = area.height;
+            }
             target.x = area.x;
             target.y = area.y;
-            target.width = attributes.width;
-            target.height = attributes.height;
         }
     }
 
-    requested = crossing_monitor
-                    ? fit_vertically(target, extents, intersect(area, work_area()))
-                    : expanded_rectangle(target, extents);
+    requested = expanded_rectangle(target, extents);
     if (debug_enabled()) {
         debug_print("snap action=%d window=0x%lx monitor=%zu/%zu current_target=%d cross=%d "
                     "target=%d,%d %dx%d request=%d,%d %dx%d extents=%d,%d,%d,%d\n",

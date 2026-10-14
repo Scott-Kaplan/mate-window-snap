@@ -3,9 +3,8 @@
 `mate-window-snap` is a deliberately small X11 utility for Ubuntu MATE 24.04. It
 runs alongside Marco and provides keyboard snapping for the focused application
 window, including dialogs. It uses RandR to discover active monitors and EWMH
-window data to snap against full monitor bounds. Snapped windows can cover MATE
-panels, but moves between monitors stay inside the usable area because Marco
-rejects moves that overlap a panel.
+window data to snap against each monitor's usable area. Snapped windows stay
+clear of MATE panels.
 
 Contributions are welcome within the project's Ubuntu MATE/X11 scope. Please
 read [CONTRIBUTING.md](CONTRIBUTING.md) before opening an issue or pull request.
@@ -16,8 +15,8 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community expectations.
 `mate-window-snap` is tested and supported on **Ubuntu MATE 24.04** using the
 **MATE desktop** with the **Marco** window manager in an **X11** session. It
 requires an X11 server with the RandR extension and a window manager that
-supports the EWMH `_NET_ACTIVE_WINDOW`, `_NET_WORKAREA`, and
-`_NET_MOVERESIZE_WINDOW` properties.
+supports the EWMH `_NET_ACTIVE_WINDOW`, `_NET_CLIENT_LIST`,
+`_NET_WM_STRUT_PARTIAL`, and `_NET_MOVERESIZE_WINDOW` properties.
 
 It supports one monitor or two monitors arranged side by side. The cross-monitor
 shortcuts assume the monitors are ordered from left to right.
@@ -136,7 +135,7 @@ All shortcuts require the Super key and a numeric keypad key with NumLock on.
 | Super+KP7 | Top-left quarter of the current monitor |
 | Super+KP4 | Left half; from the left half of a right monitor, moves to the right edge of the monitor on the left while retaining the current size |
 | Super+KP1 | Bottom-left quarter of the current monitor |
-| Super+KP5 | Full current monitor |
+| Super+KP5 | Usable area of the current monitor |
 | Super+KP9 | Top-right quarter of the current monitor |
 | Super+KP6 | Right half; from the right half of a left monitor, moves to the left edge of the monitor on the right while retaining the current size |
 | Super+KP3 | Bottom-right quarter of the current monitor |
