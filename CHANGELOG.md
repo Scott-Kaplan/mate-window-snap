@@ -2,6 +2,14 @@
 
 Below are the changes that have been made to `mate-window-snap`.
 
+## Version 1.0.14
+
+10/15/2026
+
+### Fixed
+
+- Windows crossing monitors fill the destination monitor's full usable height, removing the gap at the bottom.
+
 ## Version 1.0.13
 
 10/13/2026

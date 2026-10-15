@@ -15,7 +15,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MATE_WINDOW_SNAP_VERSION "1.0.13"
+#define MATE_WINDOW_SNAP_VERSION "1.0.14"
 #define DEBUG_LOG_PATH "/tmp/mate-window-snap.log"
 
 enum { MAX_MONITORS = 16 };
@@ -417,10 +417,7 @@ static void snap_focused_window(SnapAction action)
         area = usable_area(monitor_list[monitor_index - 1]);
         if (XGetWindowAttributes(display, window, &attributes)) {
             target.width = attributes.width - extents.left - extents.right;
-            target.height = attributes.height - extents.top - extents.bottom;
-            if (target.height > area.height) {
-                target.height = area.height;
-            }
+            target.height = area.height;
             target.x = area.x + area.width - target.width;
             target.y = area.y;
         }
@@ -429,10 +426,7 @@ static void snap_focused_window(SnapAction action)
         area = usable_area(monitor_list[monitor_index + 1]);
         if (XGetWindowAttributes(display, window, &attributes)) {
             target.width = attributes.width - extents.left - extents.right;
-            target.height = attributes.height - extents.top - extents.bottom;
-            if (target.height > area.height) {
-                target.height = area.height;
-            }
+            target.height = area.height;
             target.x = area.x;
             target.y = area.y;
         }
