@@ -92,7 +92,7 @@ These steps will remove mate-window-snap from your system's startup.
 cd ~/temp/github/mate-window-snap
 sudo make uninstall
 ```
-The final step is just to log out or restart your computer and the Key Bindings below will be gone.
+The final step is just to log out or restart your computer and the Key Binding shortcuts below will be gone.
 
 ## Key Bindings
 
