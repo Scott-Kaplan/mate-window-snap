@@ -93,7 +93,7 @@ cd ~/temp/github/mate-window-snap
 sudo make uninstall
 ```
 The final step is just to log out or restart your computer and the Key Binding shortcuts below will be gone.
-
+##
 ## Key Bindings
 
 All shortcuts require the Super key and a numeric keypad key with NumLock on.
