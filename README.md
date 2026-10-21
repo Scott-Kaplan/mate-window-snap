@@ -23,14 +23,14 @@ It supports one monitor or two monitors arranged side by side.
 Wayland sessions, other desktop environments, other window managers, and other
 Linux distributions are not currently supported nor tested.
 
-## Optional for developers
+<!-- ## Optional for developers
 
 To print snapping diagnostics to the terminal and append them to
 `/tmp/mate-window-snap.log` while testing, run:
 
 ```sh
 MATE_WINDOW_SNAP_DEBUG=1 ./mate-window-snap
-```
+``` -->
 
 ## Dependencies
 
