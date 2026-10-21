@@ -53,19 +53,16 @@ and `libxrandr-dev`. Git is needed to download the source repository.
 
 ## Get the Project, Install Dependencies, Build and Run it
 
+Install the project's dependencies
+```sh
+sudo apt install build-essential pkg-config libx11-dev libxrandr-dev
+```
 Move to the directory where you want to keep the project & clone it
-
 ```sh
 mkdir -p ~/temp/github
 cd ~/temp/github
 git clone https://github.com/Scott-Kaplan/mate-window-snap.git
 ```
-
-Install the project's dependencies
-```sh
-sudo apt install build-essential pkg-config libx11-dev libxrandr-dev
-```
-
 Build & run it
 ```sh
 cd mate-window-snap
