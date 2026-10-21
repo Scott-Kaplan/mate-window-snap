@@ -71,7 +71,7 @@ cd ~/temp/github/mate-window-snap
 ```
 Once it is installed, you can run `mate-window-snap --version` from any directory.
 
-## Automatic Startup
+## Install for Automatic Startup
 These steps will automatically activate mate-window-snap when you login:
 
 1. This command installs the executable into `/usr/local/bin` and its system-wide MATE
@@ -84,18 +84,12 @@ sudo make install
 
 2. Log out of the MATE desktop and log back in. All Key Binding shortcuts should work.
 
-## Uninstall
+## Uninstall Automatic Startup
 
-Start in a terminal opened in the directory where the repository was cloned.
-For example, if it was cloned into the home directory:
+These steps will remove automatic activation of mate-window-snap when you login
 
 ```sh
 cd ~/temp/github/mate-window-snap
-```
-
-Remove the executable and system-wide autostart entry:
-
-```sh
 sudo make uninstall
 ```
 The final step is just to log out or restart your computer.
