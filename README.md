@@ -66,6 +66,7 @@ make
 
 ## List version
 ```sh
+cd ~/temp/github/mate-window-snap
 ./mate-window-snap --version
 ```
 Once it is installed, you can run `mate-window-snap --version` from any directory.
@@ -77,6 +78,7 @@ These steps will automatically activate mate-window-snap when you login:
 autostart entry into `/etc/xdg/autostart`:
 
 ```sh
+cd ~/temp/github/mate-window-snap
 sudo make install
 ```
 
@@ -88,7 +90,7 @@ Start in a terminal opened in the directory where the repository was cloned.
 For example, if it was cloned into the home directory:
 
 ```sh
-cd ~/mate-window-snap
+cd ~/temp/github/mate-window-snap
 ```
 
 Remove the executable and system-wide autostart entry:
