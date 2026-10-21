@@ -67,7 +67,7 @@ git clone https://github.com/Scott-Kaplan/mate-window-snap.git
 Disable existing Marco shortcuts
 ```sh
 # Marco's default keypad shortcuts conflict with mate-window-snap.
-# So you will need mate-window-snap to handle them via this command
+# This command allows mate-window-snap to handle them.
 ./disable-marco-keybindings.sh
 # this command restores them: ./restore-marco-keybindings.sh
 ```
