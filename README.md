@@ -51,48 +51,35 @@ MATE_WINDOW_SNAP_DEBUG=1 ./mate-window-snap
 Build dependencies on Ubuntu are `build-essential`, `pkg-config`, `libx11-dev`,
 and `libxrandr-dev`. Git is needed to download the source repository.
 
-## Build And Install
+## Get the Project, Install Dependencies, Build and Run it
 
-Run each command in order:
-
-1. Go to your home directory (or another directory if you prefer):
+Move to the directory where you want to keep the project & clone it
 
 ```sh
-cd ~
-```
-
-2. Install Git and this project's build dependencies:
-
-```sh
-sudo apt update
-sudo apt install git build-essential pkg-config libx11-dev libxrandr-dev
-```
-
-3. Clone the project and enter its directory:
-
-```sh
+mkdir -p ~/temp/github
+cd ~/temp/github
 git clone https://github.com/Scott-Kaplan/mate-window-snap.git
-cd mate-window-snap
 ```
 
-All remaining build and installation commands in this section must be run from
-the cloned `mate-window-snap` directory.
-
-4. Build the executable:
-
+Install the project's dependencies
 ```sh
+sudo apt install build-essential pkg-config libx11-dev libxrandr-dev
+```
+
+Build it
+```sh
+cd mate-window-snap
 make
 ```
 
-5. Test:
-
+Run it
 ```sh
 ./mate-window-snap
 ```
 ... and then press one or more Key Binding shortcuts found at the bottom of this page.  You should then see whatever window you have selected snap to the respective location.
 
-6. List version
-
+## Useful commands
+List version
 ```sh
 ./mate-window-snap --version
 ```
