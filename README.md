@@ -67,7 +67,7 @@ git clone https://github.com/Scott-Kaplan/mate-window-snap.git
 Disable existing Marco shortcuts
 ```sh
 ./disable-marco-keybindings.sh
-# this command restores them (./restore-marco-keybindings.sh)
+# this command restores them if you ever need: ./restore-marco-keybindings.sh
 ```
 Build & run it
 ```sh
