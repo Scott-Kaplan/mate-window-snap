@@ -18,8 +18,7 @@ requires an X11 server with the RandR extension and a window manager that
 supports the EWMH `_NET_ACTIVE_WINDOW`, `_NET_CLIENT_LIST`,
 `_NET_WM_STRUT_PARTIAL`, and `_NET_MOVERESIZE_WINDOW` properties.
 
-It supports one monitor or two monitors arranged side by side. The cross-monitor
-shortcuts assume the monitors are ordered from left to right.
+It supports one monitor or two monitors arranged side by side.
 
 Wayland sessions, other desktop environments, other window managers, and other
 Linux distributions are not currently supported nor tested.
