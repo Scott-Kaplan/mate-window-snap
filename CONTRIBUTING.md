@@ -48,10 +48,6 @@ steps to reproduce, and any terminal output that helps explain the problem.
 Pull requests should contain a focused change, explain how it was tested, and
 identify any limitations or platform-specific behavior.
 
-## Code Of Conduct
-
-Participation in this project is subject to the [Code of Conduct](CODE_OF_CONDUCT.md).
-
 ## License
 
 By contributing to this project, you agree that your contributions will be
