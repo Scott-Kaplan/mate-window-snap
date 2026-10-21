@@ -66,14 +66,10 @@ Install the project's dependencies
 sudo apt install build-essential pkg-config libx11-dev libxrandr-dev
 ```
 
-Build it
+Build & run it
 ```sh
 cd mate-window-snap
 make
-```
-
-Run it
-```sh
 ./mate-window-snap
 ```
 ... and then press one or more Key Binding shortcuts found at the bottom of this page.  You should then see whatever window you have selected snap to the respective location.
