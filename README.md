@@ -86,7 +86,7 @@ sudo make install
 
 ## Uninstall Automatic Startup
 
-These steps will remove mate-window-snap from your system startup
+These steps will remove mate-window-snap from your system's startup.
 
 ```sh
 cd ~/temp/github/mate-window-snap
