@@ -64,9 +64,10 @@ mkdir -p ~/temp/github
 cd ~/temp/github
 git clone https://github.com/Scott-Kaplan/mate-window-snap.git
 ```
-Disable Marco shortcut conflics
+Disable existing Marco shortcuts
 ```sh
 ./disable-marco-keybindings.sh
+# this command restores them (./restore-marco-keybindings.sh)
 ```
 Build & run it
 ```sh
