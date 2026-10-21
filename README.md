@@ -32,10 +32,10 @@ To print snapping diagnostics to the terminal and append them to
 MATE_WINDOW_SNAP_DEBUG=1 ./mate-window-snap
 ``` -->
 
-## Dependencies
+<!-- ## Dependencies
 
 Build dependencies on Ubuntu are `build-essential`, `pkg-config`, `libx11-dev`,
-and `libxrandr-dev`. Git is needed to download the source repository.
+and `libxrandr-dev`. Git is needed to download the source repository. -->
 
 ## Get the Project, Install Dependencies, Build and Run it
 
