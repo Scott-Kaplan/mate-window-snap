@@ -38,7 +38,7 @@ If you ever want to restore Marco's default shortcuts, use:
 ```sh
 ./restore-marco-keybindings.sh
 ```
-## Optional (only if you want to develop or for some reason need to troubleshoot mate-window-snap)
+## Optional for developers
 
 To print snapping diagnostics to the terminal and append them to
 `/tmp/mate-window-snap.log` while testing, run:
