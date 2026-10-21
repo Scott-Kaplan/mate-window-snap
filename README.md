@@ -33,7 +33,7 @@ Marco's default keypad shortcuts conflict with `mate-window-snap`. To let
 ./disable-marco-keybindings.sh
 ```
 
-Restore Marco's default shortcuts with:
+If you ever want to restore Marco's default shortcuts, use:
 
 ```sh
 ./restore-marco-keybindings.sh
