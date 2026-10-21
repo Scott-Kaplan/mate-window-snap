@@ -8,7 +8,6 @@ clear of MATE panels.
 
 Contributions are welcome within the project's Ubuntu MATE/X11 scope. Please
 read [CONTRIBUTING.md](CONTRIBUTING.md) before opening an issue or pull request.
-See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community expectations.
 
 ## Compatibility
 
