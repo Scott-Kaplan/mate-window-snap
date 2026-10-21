@@ -79,8 +79,7 @@ make
 ```
 ... and then press one or more Key Binding shortcuts found at the bottom of this page.  You should then see whatever window you have selected snap to the respective location.
 
-## Useful commands
-List version
+## List version
 ```sh
 ./mate-window-snap --version
 ```
