@@ -59,7 +59,6 @@ Disable existing Marco shortcuts
 ```
 Build & run it
 ```sh
-cd mate-window-snap
 make
 ./mate-window-snap
 ```
