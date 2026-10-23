@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# if ran disable-macro-keybindings.sh, need to run this script because that one and this one supposedly persists through power ups.  Would only need to run this script if not using mate-window-snap.
+# The setting changes made by this script persists through power ups
 
 set -eu
 

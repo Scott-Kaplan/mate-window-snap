@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# this script persists through power ups
+# The setting changes made by this script persists through power ups
 
 set -eu
 
