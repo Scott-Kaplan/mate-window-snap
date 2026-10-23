@@ -47,6 +47,7 @@ Move to the directory where you want to keep the project & clone it
 mkdir -p ~/temp/github
 cd ~/temp/github
 git clone https://github.com/Scott-Kaplan/mate-window-snap.git
+cd mate-window-snap
 ```
 Disable existing Marco shortcuts
 ```sh
