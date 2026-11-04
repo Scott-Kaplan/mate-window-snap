@@ -2,6 +2,14 @@
 
 Below are the changes that have been made to `mate-window-snap`.
 
+## Version 1.0.15
+
+11/04/2026
+
+### Fixed
+
+ Use window-manager frame extents without changing GTK client-side decoration handling.
+
 ## Version 1.0.14
 
 10/15/2026

@@ -15,7 +15,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MATE_WINDOW_SNAP_VERSION "1.0.14"
+#define MATE_WINDOW_SNAP_VERSION "1.0.15"
 #define DEBUG_LOG_PATH "/tmp/mate-window-snap.log"
 
 enum { MAX_MONITORS = 16 };
@@ -33,6 +33,7 @@ typedef struct {
     int right;
     int top;
     int bottom;
+    bool client_side;
 } FrameExtents;
 
 typedef enum {
@@ -178,24 +179,33 @@ static Rectangle usable_area(Rectangle monitor)
 static FrameExtents frame_extents(Window window)
 {
     FrameExtents extents = { 0 };
-    Atom property = XInternAtom(display, "_GTK_FRAME_EXTENTS", True);
-    Atom type;
-    int format;
-    unsigned long item_count;
-    unsigned long bytes_after;
-    unsigned char *data = NULL;
+    const char *property_names[] = { "_GTK_FRAME_EXTENTS", "_NET_FRAME_EXTENTS" };
 
-    if (property != None &&
-        XGetWindowProperty(display, window, property, 0, 4, False, XA_CARDINAL,
-                           &type, &format, &item_count, &bytes_after, &data) == Success &&
-        type == XA_CARDINAL && format == 32 && item_count == 4 && data != NULL) {
+    for (size_t index = 0; index < sizeof(property_names) / sizeof(property_names[0]); index++) {
+        Atom property = XInternAtom(display, property_names[index], True);
+        Atom type;
+        int format;
+        unsigned long item_count;
+        unsigned long bytes_after;
+        unsigned char *data = NULL;
+
+        if (property == None ||
+            XGetWindowProperty(display, window, property, 0, 4, False, XA_CARDINAL,
+                               &type, &format, &item_count, &bytes_after, &data) != Success ||
+            type != XA_CARDINAL || format != 32 || item_count != 4 || data == NULL) {
+            XFree(data);
+            continue;
+        }
+
         unsigned long *values = (unsigned long *)data;
         extents.left = (int)values[0];
         extents.right = (int)values[1];
         extents.top = (int)values[2];
         extents.bottom = (int)values[3];
+        extents.client_side = index == 0;
+        XFree(data);
+        break;
     }
-    XFree(data);
     return extents;
 }
 
@@ -205,6 +215,25 @@ static Rectangle expanded_rectangle(Rectangle target, FrameExtents extents)
     target.y -= extents.top;
     target.width += extents.left + extents.right;
     target.height += extents.top + extents.bottom;
+    return target;
+}
+
+static Rectangle window_rectangle(Rectangle target, FrameExtents extents)
+{
+    if (extents.client_side) {
+        return expanded_rectangle(target, extents);
+    }
+
+    int horizontal_extents = extents.left + extents.right;
+    int vertical_extents = extents.top + extents.bottom;
+    if (horizontal_extents >= target.width || vertical_extents >= target.height) {
+        return target;
+    }
+
+    target.x += extents.left;
+    target.y += extents.top;
+    target.width -= horizontal_extents;
+    target.height -= vertical_extents;
     return target;
 }
 
@@ -410,13 +439,15 @@ static void snap_focused_window(SnapAction action)
     area = usable_area(monitor_list[monitor_index]);
     extents = frame_extents(window);
     target = snapped_rectangle(area, action);
-    is_current_target = matches(window, expanded_rectangle(target, extents));
+    is_current_target = matches(window, window_rectangle(target, extents));
 
     if (action == SNAP_LEFT && monitor_index > 0 && is_current_target) {
         crossing_monitor = true;
         area = usable_area(monitor_list[monitor_index - 1]);
         if (XGetWindowAttributes(display, window, &attributes)) {
-            target.width = attributes.width - extents.left - extents.right;
+            target.width = attributes.width + (extents.client_side
+                                                    ? -extents.left - extents.right
+                                                    : extents.left + extents.right);
             target.height = area.height;
             target.x = area.x + area.width - target.width;
             target.y = area.y;
@@ -425,21 +456,23 @@ static void snap_focused_window(SnapAction action)
         crossing_monitor = true;
         area = usable_area(monitor_list[monitor_index + 1]);
         if (XGetWindowAttributes(display, window, &attributes)) {
-            target.width = attributes.width - extents.left - extents.right;
+            target.width = attributes.width + (extents.client_side
+                                                    ? -extents.left - extents.right
+                                                    : extents.left + extents.right);
             target.height = area.height;
             target.x = area.x;
             target.y = area.y;
         }
     }
 
-    requested = expanded_rectangle(target, extents);
+    requested = window_rectangle(target, extents);
     if (debug_enabled()) {
         debug_print("snap action=%d window=0x%lx monitor=%zu/%zu current_target=%d cross=%d "
-                    "target=%d,%d %dx%d request=%d,%d %dx%d extents=%d,%d,%d,%d\n",
+                    "target=%d,%d %dx%d request=%d,%d %dx%d extents=%d,%d,%d,%d client_side=%d\n",
                     action, window, monitor_index, monitor_count, is_current_target,
                     crossing_monitor, target.x, target.y, target.width, target.height,
                     requested.x, requested.y, requested.width, requested.height,
-                    extents.left, extents.right, extents.top, extents.bottom);
+                    extents.left, extents.right, extents.top, extents.bottom, extents.client_side);
     }
     move_resize_window(window, requested);
 }
