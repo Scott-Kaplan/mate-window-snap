@@ -1,6 +1,6 @@
 # MATE Window Snap
 
-`mate-window-snap` is a deliberately small X11 utility for Ubuntu MATE. It
+`mate-window-snap` is a X11 utility for Ubuntu MATE. It
 runs alongside Marco and provides keyboard snapping for the focused application
 window, including dialogs. It uses RandR to discover active monitors and EWMH
 window data to snap against each monitor's usable area. Snapped windows stay
