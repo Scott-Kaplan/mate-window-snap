@@ -15,7 +15,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MATE_WINDOW_SNAP_VERSION "1.0.15"
+#define MATE_WINDOW_SNAP_VERSION "1.0.16"
 #define DEBUG_LOG_PATH "/tmp/mate-window-snap.log"
 
 enum { MAX_MONITORS = 16 };
@@ -237,6 +237,30 @@ static Rectangle window_rectangle(Rectangle target, FrameExtents extents)
     return target;
 }
 
+static bool is_pinta_window(Window window)
+{
+    const char suffix[] = " - Pinta";
+    Atom name_property = XInternAtom(display, "_NET_WM_NAME", True);
+    Atom utf8_string = XInternAtom(display, "UTF8_STRING", False);
+    Atom type;
+    int format;
+    unsigned long item_count;
+    unsigned long bytes_after;
+    unsigned char *data = NULL;
+    bool result = false;
+
+    if (name_property != None &&
+        XGetWindowProperty(display, window, name_property, 0, 1024, False, utf8_string,
+                           &type, &format, &item_count, &bytes_after, &data) == Success &&
+        type == utf8_string && format == 8 && data != NULL &&
+        item_count >= sizeof(suffix) - 1 && bytes_after == 0) {
+        result = memcmp(data + item_count - (sizeof(suffix) - 1), suffix,
+                        sizeof(suffix) - 1) == 0;
+    }
+    XFree(data);
+    return result;
+}
+
 static size_t monitors(Rectangle result[MAX_MONITORS])
 {
     XRRScreenResources *resources = XRRGetScreenResourcesCurrent(display, root);
@@ -326,7 +350,29 @@ static size_t monitor_for_window(Window window, const Rectangle monitor_list[], 
     return 0;
 }
 
-static bool matches(Window window, Rectangle rectangle)
+static bool geometry_matches(int x, int y, int width, int height, Rectangle rectangle)
+{
+    return abs(x - rectangle.x) <= GEOMETRY_TOLERANCE &&
+           abs(y - rectangle.y) <= GEOMETRY_TOLERANCE &&
+           abs(x + width - rectangle.x - rectangle.width) <= GEOMETRY_TOLERANCE &&
+           abs(y + height - rectangle.y - rectangle.height) <= GEOMETRY_TOLERANCE;
+}
+
+static bool centered_geometry_matches(int x, int y, int width, int height,
+                                      Rectangle rectangle, FrameExtents extents)
+{
+    int horizontal_extents = extents.left + extents.right;
+    int vertical_extents = extents.top + extents.bottom;
+
+    return abs(2 * x + width - 2 * rectangle.x - rectangle.width) <=
+               2 * GEOMETRY_TOLERANCE &&
+           abs(2 * y + height - 2 * rectangle.y - rectangle.height) <=
+               2 * GEOMETRY_TOLERANCE &&
+           abs(width - rectangle.width) <= horizontal_extents &&
+           abs(height - rectangle.height) <= vertical_extents;
+}
+
+static bool matches(Window window, Rectangle rectangle, FrameExtents extents, bool is_pinta)
 {
     XWindowAttributes attributes;
     Window child;
@@ -338,10 +384,22 @@ static bool matches(Window window, Rectangle rectangle)
         return false;
     }
 
-    return abs(x - rectangle.x) <= GEOMETRY_TOLERANCE &&
-           abs(y - rectangle.y) <= GEOMETRY_TOLERANCE &&
-           abs(x + attributes.width - rectangle.x - rectangle.width) <= GEOMETRY_TOLERANCE &&
-           abs(y + attributes.height - rectangle.y - rectangle.height) <= GEOMETRY_TOLERANCE;
+    if (geometry_matches(x, y, attributes.width, attributes.height, rectangle)) {
+        return true;
+    }
+    if (!is_pinta || !extents.client_side) {
+        return false;
+    }
+    if (centered_geometry_matches(x, y, attributes.width, attributes.height,
+                                  rectangle, extents)) {
+        return true;
+    }
+
+    rectangle.x += extents.left;
+    rectangle.y += extents.top;
+    rectangle.height -= extents.top + extents.bottom;
+    return rectangle.height > 0 &&
+           geometry_matches(x, y, attributes.width, attributes.height, rectangle);
 }
 
 static Rectangle snapped_rectangle(Rectangle area, SnapAction action)
@@ -428,6 +486,7 @@ static void snap_focused_window(SnapAction action)
     Rectangle requested;
     FrameExtents extents;
     XWindowAttributes attributes;
+    bool is_pinta;
     bool is_current_target;
     bool crossing_monitor = false;
 
@@ -438,16 +497,19 @@ static void snap_focused_window(SnapAction action)
     monitor_index = monitor_for_window(window, monitor_list, monitor_count);
     area = usable_area(monitor_list[monitor_index]);
     extents = frame_extents(window);
+    is_pinta = is_pinta_window(window);
     target = snapped_rectangle(area, action);
-    is_current_target = matches(window, window_rectangle(target, extents));
+    is_current_target = matches(window, window_rectangle(target, extents), extents, is_pinta);
 
     if (action == SNAP_LEFT && monitor_index > 0 && is_current_target) {
         crossing_monitor = true;
         area = usable_area(monitor_list[monitor_index - 1]);
         if (XGetWindowAttributes(display, window, &attributes)) {
-            target.width = attributes.width + (extents.client_side
-                                                    ? -extents.left - extents.right
-                                                    : extents.left + extents.right);
+            target.width = is_pinta && extents.client_side
+                               ? attributes.width
+                               : attributes.width + (extents.client_side
+                                                         ? -extents.left - extents.right
+                                                         : extents.left + extents.right);
             target.height = area.height;
             target.x = area.x + area.width - target.width;
             target.y = area.y;
@@ -456,16 +518,26 @@ static void snap_focused_window(SnapAction action)
         crossing_monitor = true;
         area = usable_area(monitor_list[monitor_index + 1]);
         if (XGetWindowAttributes(display, window, &attributes)) {
-            target.width = attributes.width + (extents.client_side
-                                                    ? -extents.left - extents.right
-                                                    : extents.left + extents.right);
+            target.width = is_pinta && extents.client_side
+                               ? attributes.width
+                               : attributes.width + (extents.client_side
+                                                         ? -extents.left - extents.right
+                                                         : extents.left + extents.right);
             target.height = area.height;
             target.x = area.x;
             target.y = area.y;
         }
     }
 
-    requested = window_rectangle(target, extents);
+    requested = is_pinta && crossing_monitor && extents.client_side
+                    ? target
+                    : window_rectangle(target, extents);
+    if (is_pinta && extents.client_side && !crossing_monitor &&
+        (requested.x < 0 || requested.y < 0 ||
+         requested.x + requested.width > DisplayWidth(display, DefaultScreen(display)) ||
+         requested.y + requested.height > DisplayHeight(display, DefaultScreen(display)))) {
+        requested = target;
+    }
     if (debug_enabled()) {
         debug_print("snap action=%d window=0x%lx monitor=%zu/%zu current_target=%d cross=%d "
                     "target=%d,%d %dx%d request=%d,%d %dx%d extents=%d,%d,%d,%d client_side=%d\n",

@@ -2,6 +2,14 @@
 
 Below are the changes that have been made to `mate-window-snap`.
 
+## Version 1.0.16
+
+11/07/2026
+
+### Fixed
+
+- Limit GTK frame and monitor-crossing adjustments to Pinta windows, preserving previous behavior for other applications.
+
 ## Version 1.0.15
 
 11/04/2026
