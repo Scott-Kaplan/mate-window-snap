@@ -16,7 +16,7 @@ Below are the changes that have been made to `mate-window-snap`.
 
 ### Fixed
 
- Use window-manager frame extents without changing GTK client-side decoration handling.
+- Use window-manager frame extents without changing GTK client-side decoration handling.
 
 ## Version 1.0.14
 
