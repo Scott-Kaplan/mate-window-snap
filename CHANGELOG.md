@@ -2,6 +2,14 @@
 
 Below are the changes that have been made to `mate-window-snap`.
 
+## Version 1.0.17
+
+11/12/2026
+
+### Fixed
+
+- Keep Evince half snaps, maximize snaps, and monitor crossings within their target areas without changing other applications.
+
 ## Version 1.0.16
 
 11/07/2026

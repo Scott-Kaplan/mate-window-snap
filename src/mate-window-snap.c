@@ -3,6 +3,7 @@
 #include <X11/Xatom.h>
 #include <X11/XKBlib.h>
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include <X11/extensions/Xrandr.h>
 #include <X11/keysym.h>
 
@@ -15,7 +16,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MATE_WINDOW_SNAP_VERSION "1.0.16"
+#define MATE_WINDOW_SNAP_VERSION "1.0.17"
 #define DEBUG_LOG_PATH "/tmp/mate-window-snap.log"
 
 enum { MAX_MONITORS = 16 };
@@ -261,6 +262,19 @@ static bool is_pinta_window(Window window)
     return result;
 }
 
+static bool is_evince_window(Window window)
+{
+    XClassHint class_hint = { 0 };
+    bool result = false;
+
+    if (XGetClassHint(display, window, &class_hint)) {
+        result = class_hint.res_class != NULL && strcmp(class_hint.res_class, "evince") == 0;
+        XFree(class_hint.res_name);
+        XFree(class_hint.res_class);
+    }
+    return result;
+}
+
 static size_t monitors(Rectangle result[MAX_MONITORS])
 {
     XRRScreenResources *resources = XRRGetScreenResourcesCurrent(display, root);
@@ -487,6 +501,8 @@ static void snap_focused_window(SnapAction action)
     FrameExtents extents;
     XWindowAttributes attributes;
     bool is_pinta;
+    bool is_evince;
+    bool bounded_client_geometry;
     bool is_current_target;
     bool crossing_monitor = false;
 
@@ -498,14 +514,18 @@ static void snap_focused_window(SnapAction action)
     area = usable_area(monitor_list[monitor_index]);
     extents = frame_extents(window);
     is_pinta = is_pinta_window(window);
+    is_evince = is_evince_window(window);
+    bounded_client_geometry = is_evince && extents.client_side;
     target = snapped_rectangle(area, action);
-    is_current_target = matches(window, window_rectangle(target, extents), extents, is_pinta);
+    is_current_target = matches(window,
+                                bounded_client_geometry ? target : window_rectangle(target, extents),
+                                extents, is_pinta);
 
     if (action == SNAP_LEFT && monitor_index > 0 && is_current_target) {
         crossing_monitor = true;
         area = usable_area(monitor_list[monitor_index - 1]);
         if (XGetWindowAttributes(display, window, &attributes)) {
-            target.width = is_pinta && extents.client_side
+            target.width = (is_pinta || is_evince) && extents.client_side
                                ? attributes.width
                                : attributes.width + (extents.client_side
                                                          ? -extents.left - extents.right
@@ -518,7 +538,7 @@ static void snap_focused_window(SnapAction action)
         crossing_monitor = true;
         area = usable_area(monitor_list[monitor_index + 1]);
         if (XGetWindowAttributes(display, window, &attributes)) {
-            target.width = is_pinta && extents.client_side
+            target.width = (is_pinta || is_evince) && extents.client_side
                                ? attributes.width
                                : attributes.width + (extents.client_side
                                                          ? -extents.left - extents.right
@@ -529,7 +549,8 @@ static void snap_focused_window(SnapAction action)
         }
     }
 
-    requested = is_pinta && crossing_monitor && extents.client_side
+    requested = bounded_client_geometry ||
+                        (is_pinta && crossing_monitor && extents.client_side)
                     ? target
                     : window_rectangle(target, extents);
     if (is_pinta && extents.client_side && !crossing_monitor &&
